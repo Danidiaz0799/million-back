@@ -1,4 +1,4 @@
-using Xunit;
+using NUnit.Framework;
 using Moq;
 using Microsoft.Extensions.Options;
 using RealEstate.Infrastructure.Repositories;
@@ -9,9 +9,10 @@ namespace RealEstate.Tests.Unit
 {
     public class PropertyRepositoryTests
     {
-        private readonly Mock<IOptions<MongoDbSettings>> _mockSettings;
+        private Mock<IOptions<MongoDbSettings>> _mockSettings = null!;
 
-        public PropertyRepositoryTests()
+        [SetUp]
+        public void SetUp()
         {
             _mockSettings = new Mock<IOptions<MongoDbSettings>>();
             var settings = new MongoDbSettings
@@ -23,41 +24,36 @@ namespace RealEstate.Tests.Unit
             _mockSettings.Setup(x => x.Value).Returns(settings);
         }
 
-        [Fact]
+        [Test]
         public void Constructor_ShouldInitializeRepository()
         {
-            // Act & Assert
             Assert.NotNull(_mockSettings.Object);
         }
 
-        [Theory]
-        [InlineData("Casa", null, null, null, 1, 10)]
-        [InlineData(null, "Bogotá", null, null, 1, 10)]
+        [TestCase("Casa", null, null, null, 1, 10)]
+        [TestCase(null, "Bogotá", null, null, 1, 10)]
         public void GetPropertiesAsync_ShouldAcceptValidParameters_String(
             string name, string address, decimal? priceMin, decimal? priceMax, int page, int pageSize)
         {
-            // Arrange & Act & Assert
-            Assert.True(page > 0);
-            Assert.True(pageSize > 0);
-            Assert.True(pageSize <= 100);
+            Assert.That(page, Is.GreaterThan(0));
+            Assert.That(pageSize, Is.GreaterThan(0));
+            Assert.That(pageSize, Is.LessThanOrEqualTo(100));
         }
 
-        [Fact]
+        [Test]
         public void GetPropertiesAsync_ShouldAcceptValidParameters_WithPriceRange()
         {
-            // Arrange
-            string name = null;
-            string address = null;
+            string? name = null;
+            string? address = null;
             decimal? priceMin = 100000m;
             decimal? priceMax = 500000m;
             int page = 1;
             int pageSize = 10;
 
-            // Act & Assert
-            Assert.True(page > 0);
-            Assert.True(pageSize > 0);
-            Assert.True(pageSize <= 100);
-            Assert.True(priceMin <= priceMax);
+            Assert.That(page, Is.GreaterThan(0));
+            Assert.That(pageSize, Is.GreaterThan(0));
+            Assert.That(pageSize, Is.LessThanOrEqualTo(100));
+            Assert.That(priceMin, Is.LessThanOrEqualTo(priceMax));
         }
     }
 }

@@ -15,7 +15,7 @@ API RESTful para gestionar propiedades inmobiliarias. Construida con .NET 8, Mon
 - Trazas/historial de transacciones
 - Búsqueda por nombre, dirección y rango de precios
 - Swagger/OpenAPI y validaciones
-- Tests unitarios e integrados
+- Tests unitarios e integrados con NUnit
 
 ## Arquitectura (Clean Architecture)
 
@@ -231,5 +231,33 @@ Respuesta típica:
 
 ## Testing
 
+Herramientas:
+- NUnit: framework de testing.
+- Moq: mocks y stubs para aislar dependencias en unit tests.
+- Microsoft.AspNetCore.Mvc.Testing: WebApplicationFactory para tests de integración con servidor en memoria.
+
+Tipos de tests y cómo funcionan:
+- Unit tests (carpeta RealEstate.Tests/Unit)
+  - OwnersControllerTests: mockea IOwnerRepository e IMapperService, invoca acciones del controller y verifica códigos (Ok, NotFound) y payloads.
+  - PropertyRepositoryTests: valida parámetros y configuración usando IOptions<MongoDbSettings> mockeado; no toca la base de datos.
+
+- Integration tests (carpeta RealEstate.Tests/Integration)
+  - PropertiesIntegrationTests: usa WebApplicationFactory<Program> para levantar la API en memoria y HttpClient para llamar endpoints reales (/api/properties, /api/owners, etc.).
+  - Verifica status 200 y, en algunos casos, estructura básica del JSON (campos data y totalCount).
+  - No requiere ejecutar la API por separado; el servidor de pruebas se hospeda en memoria.
+
+Ejecución:
 ```sh
-dotnet test RealEstate.Tests
+# Ejecutar todo
+dotnet test
+
+# Solo integración
+dotnet test --filter "FullyQualifiedName~RealEstate.Tests.Integration"
+
+# Solo unitarios
+dotnet test --filter "FullyQualifiedName~RealEstate.Tests.Unit"
+```
+
+Notas:
+- Los tests de integración usan la configuración de la aplicación; si necesitas aislar MongoDB para pruebas, crea una WebApplicationFactory personalizada que reemplace la configuración/servicios.
+- Los tests de controllers no dependen de MongoDB gracias a los mocks.

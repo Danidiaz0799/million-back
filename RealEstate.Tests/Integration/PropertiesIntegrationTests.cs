@@ -1,24 +1,39 @@
-using Xunit;
+using NUnit.Framework;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.DependencyInjection;
-using System.Text;
-using System.Text.Json;
-using RealEstate.Application.DTOs;
 
 namespace RealEstate.Tests.Integration
 {
-    public class PropertiesIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
+    [TestFixture]
+    public class PropertiesIntegrationTests
     {
-        private readonly WebApplicationFactory<Program> _factory;
-        private readonly HttpClient _client;
+        private WebApplicationFactory<Program> _factory = null!;
+        private HttpClient _client = null!;
 
-        public PropertiesIntegrationTests(WebApplicationFactory<Program> factory)
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
         {
-            _factory = factory;
+            _factory = new WebApplicationFactory<Program>();
+        }
+
+        [SetUp]
+        public void SetUp()
+        {
             _client = _factory.CreateClient();
         }
 
-        [Fact]
+        [TearDown]
+        public void TearDown()
+        {
+            _client.Dispose();
+        }
+
+        [OneTimeTearDown]
+        public void OneTimeTearDown()
+        {
+            _factory.Dispose();
+        }
+
+        [Test]
         public async Task Get_Properties_ShouldReturnSuccessStatusCode()
         {
             // Act
@@ -28,7 +43,7 @@ namespace RealEstate.Tests.Integration
             response.EnsureSuccessStatusCode();
         }
 
-        [Fact]
+        [Test]
         public async Task Get_Properties_WithFilters_ShouldReturnFilteredResults()
         {
             // Act
@@ -37,15 +52,14 @@ namespace RealEstate.Tests.Integration
             // Assert
             response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadAsStringAsync();
-            Assert.Contains("\"data\"", content);
-            Assert.Contains("\"totalCount\"", content);
+            StringAssert.Contains("\"data\"", content);
+            StringAssert.Contains("\"totalCount\"", content);
         }
 
-        [Theory]
-        [InlineData("/api/properties")]
-        [InlineData("/api/owners")]
-        [InlineData("/api/propertyimages")]
-        [InlineData("/api/propertytraces")]
+        [TestCase("/api/properties")]
+        [TestCase("/api/owners")]
+        [TestCase("/api/propertyimages")]
+        [TestCase("/api/propertytraces")]
         public async Task Get_Endpoints_ShouldReturnSuccessStatusCode(string url)
         {
             // Act

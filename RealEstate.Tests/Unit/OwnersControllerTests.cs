@@ -1,4 +1,4 @@
-using Xunit;
+using NUnit.Framework;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RealEstate.Api.Controllers;
@@ -10,18 +10,19 @@ namespace RealEstate.Tests.Unit
 {
     public class OwnersControllerTests
     {
-        private readonly OwnersController _controller;
-        private readonly Mock<IOwnerRepository> _mockRepository;
-        private readonly Mock<IMapperService> _mockMapper;
+        private OwnersController _controller = null!;
+        private Mock<IOwnerRepository> _mockRepository = null!;
+        private Mock<IMapperService> _mockMapper = null!;
 
-        public OwnersControllerTests()
+        [SetUp]
+        public void SetUp()
         {
             _mockRepository = new Mock<IOwnerRepository>();
             _mockMapper = new Mock<IMapperService>();
             _controller = new OwnersController(_mockRepository.Object, _mockMapper.Object);
         }
 
-        [Fact]
+        [Test]
         public async Task Get_ShouldReturnOkResult_WithOwnersList()
         {
             // Arrange
@@ -41,11 +42,13 @@ namespace RealEstate.Tests.Unit
             var result = await _controller.Get();
 
             // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result.Result);
-            Assert.NotNull(okResult.Value);
+            Assert.IsInstanceOf<OkObjectResult>(result.Result);
+            var ok = result.Result as OkObjectResult;
+            Assert.That(ok, Is.Not.Null);
+            Assert.That(ok!.Value, Is.Not.Null);
         }
 
-        [Fact]
+        [Test]
         public async Task GetById_WithValidId_ShouldReturnOwner()
         {
             // Arrange
@@ -59,11 +62,12 @@ namespace RealEstate.Tests.Unit
             var result = await _controller.GetById(1);
 
             // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result.Result);
-            Assert.Equal(ownerDto, okResult.Value);
+            Assert.IsInstanceOf<OkObjectResult>(result.Result);
+            var ok = result.Result as OkObjectResult;
+            Assert.That(ok!.Value, Is.EqualTo(ownerDto));
         }
 
-        [Fact]
+        [Test]
         public async Task GetById_WithInvalidId_ShouldReturnNotFound()
         {
             // Arrange
@@ -73,7 +77,7 @@ namespace RealEstate.Tests.Unit
             var result = await _controller.GetById(999);
 
             // Assert
-            Assert.IsType<NotFoundResult>(result.Result);
+            Assert.IsInstanceOf<NotFoundResult>(result.Result);
         }
     }
 }
