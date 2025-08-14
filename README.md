@@ -17,6 +17,60 @@ API RESTful para gestionar propiedades inmobiliarias. Construida con .NET 8, Mon
 - Swagger/OpenAPI y validaciones
 - Tests unitarios e integrados con NUnit
 
+## Inicio Rápido
+
+1) Prerrequisitos
+
+```sh
+# .NET 8 SDK
+winget install Microsoft.DotNet.SDK.8
+
+# MongoDB Community Server
+winget install MongoDB.Server
+```
+
+2) Ejecutar API
+
+```sh
+# Restaurar dependencias y ejecutar
+dotnet restore
+dotnet run --project RealEstate.Api
+```
+
+3) Inicializar la base de datos con datos de ejemplo
+
+Después de ejecutar el proyecto por primera vez, puedes cargar datos de ejemplo en la base de datos ejecutando el siguiente script:
+
+### Requisitos previos
+- **MongoDB Community Server** instalado y corriendo (el servicio debe estar iniciado)
+- **MongoDB Shell (mongosh)** instalado ([descargar aquí](https://www.mongodb.com/try/download/shell))
+- El ejecutable `mongosh` debe estar en el PATH, o usa la ruta completa al ejecutarlo
+
+### ¿Cuándo ejecutarlo?
+- Solo la primera vez después de instalar MongoDB y correr la API
+- O cuando quieras restaurar los datos de ejemplo
+
+### ¿Cómo ejecutarlo?
+
+1. Abre una terminal **cmd.exe** (no PowerShell)
+2. Navega a la raíz del proyecto (donde está la carpeta `scripts`)
+3. Ejecuta:
+
+```cmd
+mongosh < scripts\mongo\mongo-init.js
+```
+
+- Si el comando `mongosh` no se reconoce, agrega la carpeta de binarios de MongoDB Shell al PATH (ejemplo: `C:\Program Files\MongoDB\mongosh\`), o usa la ruta completa al ejecutable.
+- El script conecta a `localhost:27017` y crea la base de datos `realestate_db` con datos de ejemplo.
+
+¡Listo! Ahora la API tendrá datos de prueba disponibles.
+
+4) Swagger
+
+```
+http://localhost:5064/swagger
+```
+
 ## Arquitectura (Clean Architecture)
 
 Patrón utilizado:
@@ -99,32 +153,6 @@ Relaciones:
 - Owner 1:N Property
 - Property 1:N PropertyImage
 - Property 1:N PropertyTrace
-
-## Inicio Rápido
-
-1) Prerrequisitos
-
-```sh
-# .NET 8 SDK
-winget install Microsoft.DotNet.SDK.8
-
-# MongoDB Community Server
-winget install MongoDB.Server
-```
-
-2) Ejecutar API
-
-```sh
-# Restaurar dependencias y ejecutar
-dotnet restore
-dotnet run --project RealEstate.Api
-```
-
-3) Swagger
-
-```
-http://localhost:5064/swagger
-```
 
 ## CORS
 
