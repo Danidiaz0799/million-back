@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RealEstate.Application.Interfaces;
-using RealEstate.Domain.Entities;
+using RealEstate.Api.DTOs;
 
 namespace RealEstate.Api.Controllers
 {
@@ -16,7 +16,7 @@ namespace RealEstate.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Property>>> Get(
+        public async Task<ActionResult<IEnumerable<PropertyDto>>> Get(
             string? name,
             string? address,
             decimal? priceMin,
@@ -26,8 +26,18 @@ namespace RealEstate.Api.Controllers
             string? sortField = null,
             bool sortDescending = false)
         {
-            var result = await _repository.GetPropertiesAsync(
+            var properties = await _repository.GetPropertiesAsync(
                 name, address, priceMin, priceMax, page, pageSize, sortField, sortDescending);
+
+            var result = properties.Select(p => new PropertyDto
+            {
+                IdOwner = p.OwnerId,
+                Name = p.Name,
+                Address = p.Address,
+                Price = p.Price,
+                ImageUrl = p.ImageUrl
+            });
+
             return Ok(result);
         }
     }
