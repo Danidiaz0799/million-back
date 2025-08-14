@@ -1,194 +1,173 @@
-# Real Estate API - Documentación Completa
+# Real Estate API
 
-## ?? Resumen del Proyecto
+API RESTful para gestión de propiedades inmobiliarias desarrollada con .NET 8, MongoDB y Clean Architecture.
 
-Este proyecto implementa una API RESTful completa para la gestión de propiedades inmobiliarias usando .NET 8, MongoDB y Clean Architecture.
+## ??? Arquitectura
 
-## ? Cumplimiento de Requisitos de la Prueba Técnica
+**Clean Architecture** con separación de responsabilidades en 4 capas:
 
-### ??? **Arquitectura y Tecnologías**
-- ? Backend: .NET 8 con C#
-- ? Base de Datos: MongoDB
-- ? Arquitectura: Clean Architecture implementada
-- ? Testing: NUnit/xUnit para pruebas unitarias e integración
-- ? API REST: Completamente implementada con todos los endpoints
-
-### ?? **Esquemas de Base de Datos**
-Coinciden perfectamente con el diagrama proporcionado:
-- ? **Owner**: IdOwner, Name, Address, Photo, Birthday
-- ? **Property**: IdProperty, Name, Address, Price, CodeInternal, Year, IdOwner (FK)
-- ? **PropertyImage**: IdPropertyImage, IdProperty (FK), File, Enabled
-- ? **PropertyTrace**: IdPropertyTrace, DateSale, Name, Value, Tax, IdProperty (FK)
-
-### ?? **Funcionalidades del API**
-- ? CRUD completo para todas las entidades
-- ? Filtros de búsqueda (nombre, dirección, rango de precios)
-- ? Paginación implementada
-- ? Validaciones de datos robustas
-- ? Manejo de errores centralizado
-- ? Documentación Swagger completa
-
-### ?? **Testing**
-- ? Pruebas unitarias implementadas
-- ? Pruebas de integración para endpoints
-- ? Framework de testing configurado
-- ? Cobertura de casos principales
-
-### ?? **Documentación**
-- ? Swagger UI disponible
-- ? Documentación XML en controllers
-- ? Comentarios en código
-- ? README con instrucciones completas
-
-## ?? Cómo Ejecutar el Proyecto
-
-### 1. **Prerrequisitos**
-```bash
-# Instalar .NET 8 SDK
-# Instalar MongoDB
-# Configurar MongoDB en localhost:27017
+```
+???????????????????
+?   API Layer     ?  ? Controllers, Middleware, Swagger
+???????????????????
+? Application     ?  ? DTOs, Interfaces, Services
+???????????????????
+?    Domain       ?  ? Entities (Property, Owner, etc.)
+???????????????????
+? Infrastructure  ?  ? Repositories, MongoDB, Config
+???????????????????
 ```
 
-### 2. **Configurar Base de Datos**
-```bash
-# Ejecutar el script de inicialización de MongoDB
-mongo < mongo-setup.js
+## ??? Stack Tecnológico
+
+- **.NET 8** - Framework principal
+- **MongoDB** - Base de datos NoSQL
+- **Swagger** - Documentación de API
+- **xUnit** - Testing framework
+- **Clean Architecture** - Patrón arquitectónico
+
+## ?? Modelo de Datos
+
+```
+Owner ???
+        ?
+        ???> Property ?????> PropertyImage
+                        ?
+                        ???> PropertyTrace
 ```
 
-### 3. **Ejecutar la API**
-```bash
-# Opción 1: Usar el script
-./start-api.bat
+- **Owner**: Propietarios
+- **Property**: Propiedades inmobiliarias
+- **PropertyImage**: Galería de imágenes
+- **PropertyTrace**: Historial de transacciones
 
-# Opción 2: Comando directo
+## ?? Instalación y Uso
+
+### 1. Prerrequisitos
+```bash
+# .NET 8 SDK
+# MongoDB Server (localhost:27017)
+```
+
+### 2. Configurar Base de Datos
+```bash
+# Ejecutar desde el directorio raíz
+mongo < reset-database.js
+```
+
+### 3. Ejecutar API
+```bash
 dotnet run --project RealEstate.Api
 ```
 
-### 4. **Ejecutar Tests**
-```bash
-dotnet test RealEstate.Tests
+### 4. Acceder a Swagger
+```
+http://localhost:5065/swagger
 ```
 
-## ?? URLs Importantes
+## ?? Endpoints Principales
 
-| Servicio | URL | Descripción |
-|----------|-----|-------------|
-| **Swagger UI** | `https://localhost:5064/swagger` | Documentación interactiva de la API |
-| **Health Check** | `https://localhost:5064/api/health` | Verificar estado de la API |
-| **Propiedades** | `https://localhost:5064/api/properties` | CRUD de propiedades |
-| **Propietarios** | `https://localhost:5064/api/owners` | CRUD de propietarios |
-| **Imágenes** | `https://localhost:5064/api/propertyimages` | CRUD de imágenes |
-| **Trazas** | `https://localhost:5064/api/propertytraces` | CRUD de trazas |
+| Endpoint | Método | Descripción |
+|----------|--------|-------------|
+| `/api/properties` | GET | Listar propiedades con filtros |
+| `/api/properties/{id}` | GET/PUT/DELETE | CRUD de propiedades |
+| `/api/owners` | GET/POST | Gestión de propietarios |
+| `/api/propertyimages` | GET/POST/DELETE | Galería de imágenes |
+| `/api/propertytraces` | GET/POST/DELETE | Historial de transacciones |
 
-## ?? Ejemplos de Uso de la API
+## ?? Filtros Avanzados
 
-### **Buscar Propiedades con Filtros**
-```http
-GET /api/properties?name=Casa&address=Bogotá&priceMin=100000&priceMax=500000&page=1&pageSize=10
+**GET /api/properties** soporta:
+- `name` - Búsqueda por nombre
+- `address` - Filtro por dirección  
+- `priceMin/priceMax` - Rango de precios
+- `page/pageSize` - Paginación
+- `sortField/sortDescending` - Ordenamiento
+
+**Ejemplo:**
+```
+GET /api/properties?name=Casa&priceMin=100000&page=1&pageSize=10
 ```
 
-### **Crear Nueva Propiedad**
-```http
-POST /api/properties
-Content-Type: application/json
+## ??? Conexión MongoDB
 
+### Configuración (appsettings.json)
+```json
 {
-  "name": "Casa en Zona Norte",
-  "address": "Calle 100 #15-20",
-  "price": 350000000,
-  "codeInternal": "PROP-004",
-  "year": 2023,
-  "idOwner": 1
+  "MongoDbSettings": {
+    "ConnectionString": "mongodb://localhost:27017",
+    "DatabaseName": "realestate_db"
+  }
 }
 ```
 
-### **Obtener Imágenes de una Propiedad**
-```http
-GET /api/propertyimages/property/1
+### Implementación
+```csharp
+// Dependency Injection
+services.Configure<MongoDbSettings>(configuration.GetSection("MongoDbSettings"));
+services.AddScoped<IPropertyRepository, PropertyRepository>();
+
+// Repository Pattern
+public class PropertyRepository : IPropertyRepository
+{
+    private readonly IMongoCollection<Property> _collection;
+    
+    public PropertyRepository(IOptions<MongoDbSettings> settings)
+    {
+        var client = new MongoClient(settings.Value.ConnectionString);
+        _database = client.GetDatabase(settings.Value.DatabaseName);
+        _collection = _database.GetCollection<Property>("properties");
+    }
+}
 ```
 
-### **Obtener Trazas de una Propiedad**
-```http
-GET /api/propertytraces/property/1
+## ?? Características
+
+- **? CRUD Completo** - Todas las entidades
+- **? Filtros Avanzados** - Búsqueda y paginación
+- **? Validaciones** - Data annotations y ModelState
+- **? Auto-incremento** - IDs secuenciales en MongoDB  
+- **? CORS** - Configurado para frontend
+- **? Exception Handling** - Middleware centralizado
+- **? Testing** - Unit e Integration tests
+- **? Swagger** - Documentación interactiva
+
+## ?? Testing
+
+```bash
+# Ejecutar todos los tests
+dotnet test RealEstate.Tests
+
+# Resultado esperado: 13/13 tests passing
 ```
 
-## ??? Estructura del Proyecto
+## ??? Scripts de Utilidad
 
+- `reset-database.js` - Resetear BD con datos de prueba
+- `clean-all.js` - Limpiar BD completamente  
+- `clean-db.bat` - Script interactivo de limpieza
+
+## ?? Respuesta Típica
+
+```json
+{
+  "data": [
+    {
+      "id": 1,
+      "name": "Casa en Bogotá",
+      "address": "Calle 123 #45-67", 
+      "price": 350000000,
+      "codeInternal": "PROP-001",
+      "year": 2020,
+      "idOwner": 1
+    }
+  ],
+  "totalCount": 1,
+  "page": 1,
+  "pageSize": 10
+}
 ```
-RealEstate.Api/
-??? ?? RealEstate.Api/          # Capa de Presentación (Controllers, Middleware)
-??? ?? RealEstate.Application/  # Capa de Aplicación (DTOs, Interfaces, Services)
-??? ?? RealEstate.Domain/       # Capa de Dominio (Entities, Value Objects)
-??? ?? RealEstate.Infrastructure/ # Capa de Infraestructura (Repositories, DB)
-??? ?? RealEstate.Tests/        # Pruebas Unitarias e Integración
-??? ?? mongo-setup.js           # Script de inicialización de BD
-??? ?? start-api.bat           # Script de inicio rápido
-```
-
-## ?? Características Destacadas
-
-### **Clean Architecture**
-- Separación clara de responsabilidades
-- Inversión de dependencias implementada
-- Testabilidad máxima
-
-### **Performance**
-- Índices de MongoDB optimizados
-- Paginación eficiente
-- Queries optimizadas
-
-### **Seguridad**
-- Validaciones robustas
-- Manejo seguro de errores
-- CORS configurado para frontend
-
-### **Mantenibilidad**
-- Código limpio y documentado
-- Patrones de diseño aplicados
-- Tests automatizados
-
-## ?? Resultados de Testing
-
-```
-? Tests Unitarios: 13/13 pasando
-? Tests de Integración: 100% endpoints funcionando
-? Compilación: Sin errores ni warnings
-? Swagger: Documentación completa disponible
-```
-
-## ?? Esquemas de Base de Datos Implementados
-
-El proyecto implementa exactamente los esquemas del diagrama proporcionado:
-
-1. **Collections MongoDB**:
-   - `owners` - Información de propietarios
-   - `properties` - Catálogo de propiedades
-   - `propertyimages` - Galería de imágenes
-   - `propertytraces` - Historial de transacciones
-   - `counters` - Auto-incremento de IDs
-
-2. **Relaciones**:
-   - Property ? Owner (IdOwner)
-   - PropertyImage ? Property (IdProperty)
-   - PropertyTrace ? Property (IdProperty)
-
-## ? VERIFICACIÓN FINAL
-
-**Este proyecto cumple al 100% con todos los requisitos de la prueba técnica:**
-
-1. ? **Backend API**: Implementado con .NET 8
-2. ? **Base de Datos**: MongoDB con esquemas exactos
-3. ? **CRUD Completo**: Todos los endpoints funcionando
-4. ? **Filtros**: Búsqueda por nombre, dirección y precio
-5. ? **Paginación**: Sistema completo implementado
-6. ? **Testing**: Pruebas unitarias e integración
-7. ? **Documentación**: Swagger UI completa
-8. ? **Arquitectura**: Clean Architecture aplicada
-9. ? **Performance**: Optimizaciones implementadas
-10. ? **Error Handling**: Manejo robusto de errores
-
-## ?? Soporte
-
-La API está lista para conectarse con cualquier frontend (React/Next.js) y proporciona todas las funcionalidades requeridas para la gestión completa de propiedades inmobiliarias.
 
 ---
+
+**Proyecto listo para integración con frontend React/Next.js** ??
