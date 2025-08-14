@@ -1,29 +1,29 @@
-# ?? Real Estate API
+# Real Estate API
 
 [![.NET 8](https://img.shields.io/badge/.NET-8.0-512BD4?style=for-the-badge&logo=dotnet)](https://dotnet.microsoft.com/)
 [![MongoDB](https://img.shields.io/badge/MongoDB-6.0-47A248?style=for-the-badge&logo=mongodb)](https://www.mongodb.com/)
 [![Swagger](https://img.shields.io/badge/Swagger-OpenAPI-85EA2D?style=for-the-badge&logo=swagger)](https://swagger.io/)
 [![Clean Architecture](https://img.shields.io/badge/Architecture-Clean-blue?style=for-the-badge)](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 
-## ?? Descripción
+## Descripción
 
 **Real Estate API** es una API RESTful robusta para la gestión completa de propiedades inmobiliarias, desarrollada con .NET 8 y MongoDB. Implementa Clean Architecture para garantizar mantenibilidad, testabilidad y escalabilidad.
 
-### ? Características Principales
+### Características Principales
 
-- ?? **Gestión Completa de Propiedades**: CRUD con filtros avanzados y paginación
-- ?? **Sistema de Propietarios**: Gestión completa de owners con validaciones
-- ?? **Trazabilidad de Transacciones**: Histórico completo de property traces
-- ??? **Gestión de Imágenes**: Sistema de galería multimedia por propiedad
-- ?? **Búsqueda Avanzada**: Filtros por nombre, dirección y rango de precios
-- ?? **Paginación Inteligente**: Sistema optimizado de paginación
-- ?? **Clean Architecture**: Arquitectura escalable y mantenible
-- ?? **Documentación Swagger**: API completamente documentada
-- ?? **Testing Completo**: Unit tests e integration tests
+- **Gestión Completa de Propiedades**: CRUD con filtros avanzados y paginación
+- **Sistema de Propietarios**: Gestión completa de owners con validaciones
+- **Trazabilidad de Transacciones**: Histórico completo de property traces
+- **Gestión de Imágenes**: Sistema de galería multimedia por propiedad
+- **Búsqueda Avanzada**: Filtros por nombre, dirección y rango de precios
+- **Paginación Inteligente**: Sistema optimizado de paginación
+- **Clean Architecture**: Arquitectura escalable y mantenible
+- **Documentación Swagger**: API completamente documentada
+- **Testing Completo**: Unit tests e integration tests
 
-## ??? Arquitectura de la Aplicación
+## Arquitectura de la Aplicación
 
-### ?? Clean Architecture - 4 Capas
+### Clean Architecture - 4 Capas
 
 ```
 ???????????????????????????????????????????????????????????????
@@ -47,31 +47,31 @@
 ???????????????????????????????????????????????????????????????
 ```
 
-### ?? ¿Por qué Clean Architecture?
+### ¿Por qué Clean Architecture?
 
-#### **?? Separación de Responsabilidades**
+#### **Separación de Responsabilidades**
 - **Domain**: Lógica de negocio pura, sin dependencias externas
 - **Application**: Casos de uso y reglas de aplicación
 - **Infrastructure**: Detalles técnicos (BD, APIs externas)
 - **Presentation**: Controladores y presentación de datos
 
-#### **?? Dependency Inversion**
+#### **Dependency Inversion**
 - Las capas internas no conocen las externas
 - Interfaces definen contratos, no implementaciones
 - Fácil testing y intercambio de componentes
 
-## ??? Stack Tecnológico
+## Stack Tecnológico
 
-- **?? .NET 8** - Framework principal con últimas características
-- **?? MongoDB** - Base de datos NoSQL flexible y escalable
-- **?? Swagger/OpenAPI** - Documentación interactiva de API
-- **?? xUnit** - Framework de testing robusto
-- **??? Clean Architecture** - Patrón arquitectónico enterprise
-- **?? Dependency Injection** - Inversión de control nativa de .NET
+- **.NET 8** - Framework principal con últimas características
+- **MongoDB** - Base de datos NoSQL flexible y escalable
+- **Swagger/OpenAPI** - Documentación interactiva de API
+- **xUnit** - Framework de testing robusto
+- **Clean Architecture** - Patrón arquitectónico enterprise
+- **Dependency Injection** - Inversión de control nativa de .NET
 
-## ?? Modelo de Datos
+## Modelo de Datos
 
-### ??? Entidades Principales
+### Entidades Principales
 
 ```
 Owner (Propietario)
@@ -105,7 +105,7 @@ PropertyTrace (Transacción)
 ?? IdProperty: int (FK)
 ```
 
-### ?? Relaciones
+### Relaciones
 
 ```
 Owner ???
@@ -115,9 +115,9 @@ Owner ???
                         ???> PropertyTrace (1:N)
 ```
 
-## ?? Inicio Rápido
+## Inicio Rápido
 
-### 1?? Prerrequisitos
+### 1. Prerrequisitos
 
 ```bash
 # .NET 8 SDK
@@ -127,14 +127,14 @@ winget install Microsoft.DotNet.SDK.8
 winget install MongoDB.Server
 ```
 
-### 2?? Configurar Base de Datos
+### 2. Configurar Base de Datos
 
 ```bash
 # Inicializar MongoDB con datos de prueba
 mongo < reset-database.js
 ```
 
-### 3?? Ejecutar API
+### 3. Ejecutar API
 
 ```bash
 # Restaurar dependencias y ejecutar
@@ -142,15 +142,15 @@ dotnet restore
 dotnet run --project RealEstate.Api
 ```
 
-### 4?? Acceder a Swagger
+### 4. Acceder a Swagger
 
 ```
-?? http://localhost:5065/swagger
+http://localhost:5065/swagger
 ```
 
-## ?? API Reference
+## API Reference
 
-### ?? Endpoints Principales
+### Endpoints Principales
 
 | Recurso | Endpoint | Métodos | Descripción |
 |---------|----------|---------|-------------|
@@ -162,7 +162,7 @@ dotnet run --project RealEstate.Api
 | **Traces** | `/api/propertytraces` | `GET, POST, DELETE` | Historial de transacciones |
 | **Health** | `/api/health` | `GET` | Estado de la API |
 
-### ?? Filtros Avanzados
+### Filtros Avanzados
 
 **GET /api/properties** soporta:
 
@@ -181,7 +181,7 @@ GET /api/properties?name=Casa&address=Bogotá&priceMin=100000&priceMax=500000&pag
 | `sortField` | `string?` | Campo de ordenamiento | `Name`, `Price`, `Year` |
 | `sortDescending` | `bool` | Orden descendente | `true`, `false` |
 
-### ?? Respuesta Típica
+### Respuesta Típica
 
 ```json
 {
@@ -202,9 +202,9 @@ GET /api/properties?name=Casa&address=Bogotá&priceMin=100000&priceMax=500000&pag
 }
 ```
 
-## ??? Conexión MongoDB
+## Conexión MongoDB
 
-### ?? Configuración
+### Configuración
 
 ```json
 {
@@ -219,7 +219,7 @@ GET /api/properties?name=Casa&address=Bogotá&priceMin=100000&priceMax=500000&pag
 }
 ```
 
-### ?? Implementación
+### Implementación
 
 ```csharp
 // Dependency Injection en Program.cs
@@ -253,21 +253,21 @@ public class PropertyRepository : IPropertyRepository
 }
 ```
 
-## ?? Características Técnicas
+## Características Técnicas
 
-### ? Funcionalidades Implementadas
+### Funcionalidades Implementadas
 
-- **?? Validaciones Robustas** - Data Annotations + ModelState
-- **?? Auto-incremento** - IDs secuenciales con MongoDB counters
-- **?? CORS Configurado** - Listo para frontend React/Next.js
-- **?? Exception Handling** - Middleware centralizado de errores
-- **?? Paginación Optimizada** - Sistema eficiente de paginación
-- **?? Índices de BD** - MongoDB optimizado para búsquedas
-- **?? Repository Pattern** - Abstracción de acceso a datos
-- **?? Dependency Injection** - Inversión de control nativa
-- **?? Swagger UI** - Documentación interactiva completa
+- **Validaciones Robustas** - Data Annotations + ModelState
+- **Auto-incremento** - IDs secuenciales con MongoDB counters
+- **CORS Configurado** - Listo para frontend React/Next.js
+- **Exception Handling** - Middleware centralizado de errores
+- **Paginación Optimizada** - Sistema eficiente de paginación
+- **Índices de BD** - MongoDB optimizado para búsquedas
+- **Repository Pattern** - Abstracción de acceso a datos
+- **Dependency Injection** - Inversión de control nativa
+- **Swagger UI** - Documentación interactiva completa
 
-### ?? Testing
+### Testing
 
 ```bash
 # Ejecutar todos los tests
@@ -279,32 +279,32 @@ dotnet test RealEstate.Tests
 ? Coverage: 13/13 tests passing
 ```
 
-## ??? Scripts de Utilidad
+## Scripts de Utilidad
 
 | Script | Descripción | Comando |
 |--------|-------------|---------|
-| `reset-database.js` | ?? Reset completo con datos | `mongo < reset-database.js` |
-| `clean-all.js` | ?? Limpiar BD completamente | `mongo < clean-all.js` |
-| `clean-db.bat` | ??? Script interactivo Windows | `./clean-db.bat` |
+| `reset-database.js` | Reset completo con datos | `mongo < reset-database.js` |
+| `clean-all.js` | Limpiar BD completamente | `mongo < clean-all.js` |
+| `clean-db.bat` | Script interactivo Windows | `./clean-db.bat` |
 
-## ?? Próximas Mejoras
+## Próximas Mejoras
 
-- [ ] ?? Autenticación JWT
-- [ ] ?? Logging estructurado (Serilog)
-- [ ] ?? Redis Caching
-- [ ] ?? Docker containerization
-- [ ] ?? Application Insights
-- [ ] ?? CQRS Pattern
+- [ ] Autenticación JWT
+- [ ] Logging estructurado (Serilog)
+- [ ] Redis Caching
+- [ ] Docker containerization
+- [ ] Application Insights
+- [ ] CQRS Pattern
 
 ---
 
-## ?? Contacto
+## Contacto
 
 **Desarrollado para integración con Frontend React/Next.js** 
 
-?? **API Endpoint**: `http://localhost:5065`  
-?? **Swagger**: `http://localhost:5065/swagger`  
-? **Estado**: Listo para producción
+**API Endpoint**: `http://localhost:5065`  
+**Swagger**: `http://localhost:5065/swagger`  
+**Estado**: Listo para producción
 
 ---
 
