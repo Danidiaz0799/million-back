@@ -192,4 +192,3 @@ El proyecto implementa exactamente los esquemas del diagrama proporcionado:
 La API está lista para conectarse con cualquier frontend (React/Next.js) y proporciona todas las funcionalidades requeridas para la gestión completa de propiedades inmobiliarias.
 
 ---
-**Proyecto completado y verificado - Listo para evaluación técnica** ?
