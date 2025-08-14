@@ -10,6 +10,7 @@ namespace RealEstate.Application.Services
         public PropertyDto MapToDto(Property p) =>
             new PropertyDto
             {
+                Id = p.IdProperty,
                 Name = p.Name,
                 Address = p.Address,
                 Price = p.Price,
@@ -21,6 +22,7 @@ namespace RealEstate.Application.Services
         public Property MapToEntity(PropertyDto dto) =>
             new Property
             {
+                IdProperty = dto.Id,
                 Name = dto.Name,
                 Address = dto.Address,
                 Price = dto.Price,
@@ -33,6 +35,7 @@ namespace RealEstate.Application.Services
         public OwnerDto MapToDto(Owner o) =>
             new OwnerDto
             {
+                Id = o.IdOwner,
                 Name = o.Name,
                 Address = o.Address,
                 Photo = o.Photo,
@@ -42,6 +45,7 @@ namespace RealEstate.Application.Services
         public Owner MapToEntity(OwnerDto dto) =>
             new Owner
             {
+                IdOwner = dto.Id,
                 Name = dto.Name,
                 Address = dto.Address,
                 Photo = dto.Photo,
@@ -52,6 +56,7 @@ namespace RealEstate.Application.Services
         public PropertyImageDto MapToDto(PropertyImage pi) =>
             new PropertyImageDto
             {
+                Id = pi.IdPropertyImage,
                 IdProperty = pi.IdProperty,
                 File = pi.File,
                 Enabled = pi.Enabled
@@ -60,6 +65,7 @@ namespace RealEstate.Application.Services
         public PropertyImage MapToEntity(PropertyImageDto dto) =>
             new PropertyImage
             {
+                IdPropertyImage = dto.Id,
                 IdProperty = dto.IdProperty,
                 File = dto.File,
                 Enabled = dto.Enabled
@@ -69,6 +75,7 @@ namespace RealEstate.Application.Services
         public PropertyTraceDto MapToDto(PropertyTrace pt) =>
             new PropertyTraceDto
             {
+                Id = pt.IdPropertyTrace,
                 DateSale = pt.DateSale,
                 Name = pt.Name,
                 Value = pt.Value,
@@ -79,6 +86,7 @@ namespace RealEstate.Application.Services
         public PropertyTrace MapToEntity(PropertyTraceDto dto) =>
             new PropertyTrace
             {
+                IdPropertyTrace = dto.Id,
                 DateSale = dto.DateSale,
                 Name = dto.Name,
                 Value = dto.Value,

@@ -4,6 +4,7 @@ namespace RealEstate.Application.DTOs
 {
     public class OwnerDto
     {
+        public int Id { get; set; }
         [Required] public string Name { get; set; } = default!;
         [Required] public string Address { get; set; } = default!;
         [Url] public string Photo { get; set; } = default!;
