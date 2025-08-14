@@ -19,12 +19,47 @@ API RESTful para gestionar propiedades inmobiliarias. Construida con .NET 8, Mon
 
 ## Arquitectura (Clean Architecture)
 
-- Presentation: Controllers, middleware, Swagger
-- Application: DTOs, interfaces, servicios de aplicación
-- Domain: Entidades y reglas de negocio
-- Infrastructure: Repositorios, MongoDB, servicios externos
+Patrón utilizado:
+- Clean Architecture (inspirada en Onion/Hexagonal). Separa reglas de negocio del detalle técnico y define límites claros entre capas.
 
-Las capas internas no dependen de las externas (Dependency Inversion) y se inyectan a través de interfaces.
+¿Por qué esta arquitectura?
+- Independencia de frameworks: el dominio no depende de ASP.NET Core ni de MongoDB.
+- Testabilidad: el núcleo es fácilmente unit testeable; la infraestructura se puede mockear.
+- Mantenibilidad y escalabilidad: cambios en persistencia o exposición (REST/GraphQL) no rompen el dominio.
+- Sustituibilidad: reemplazar MongoDB por otro storage afecta solo a Infrastructure.
+- Enfoque en negocio: el modelo de dominio permanece estable pese a cambios técnicos.
+
+Mapeo a proyectos del repositorio:
+- Presentation ? RealEstate.Api (Controllers, Middleware, Swagger, CORS)
+- Application ? RealEstate.Application (DTOs, interfaces, servicios de aplicación)
+- Domain ? RealEstate.Domain (entidades y reglas de negocio puras)
+- Infrastructure ? RealEstate.Infrastructure (repositorios, MongoDB Driver, implementaciones de interfaces)
+
+Reglas de dependencia (de adentro hacia afuera):
+- Domain no depende de ninguna otra capa.
+- Application depende solo de Domain (contratos/DTOs, casos de uso).
+- Infrastructure depende de Application y Domain (implementa interfaces, acceso a datos).
+- Presentation depende de Application (usa casos de uso/servicios) y modela la API.
+
+Flujo típico de una petición:
+1. Controller (Presentation) recibe la request y valida parámetros.
+2. Invoca un servicio/caso de uso (Application) trabajando con DTOs e interfaces de repositorio.
+3. Infrastructure implementa las interfaces y consulta MongoDB.
+4. Application mapea entidades ? DTOs y retorna el resultado al Controller.
+5. Controller responde con el contrato HTTP (códigos, paginación, etc.).
+
+Patrones y decisiones clave:
+- Dependency Injection: servicios y repositorios registrados en Program.cs.
+- Repository Pattern con MongoDB Driver y filtros/paginación eficientes.
+- DTOs + servicio de mapeo para aislar el dominio del contrato HTTP.
+- Middleware centralizado de excepciones y validaciones por atributos.
+- IDs secuenciales con colección de counters en MongoDB.
+- Swagger/OpenAPI con generación y UI para documentación.
+- CORS habilitado con políticas por entorno (DevelopmentCORS, AllowReactApp).
+
+Trade-offs:
+- Más archivos/abstracciones y curva de entrada mayor.
+- Beneficia proyectos con evolución de negocio, múltiples integraciones y necesidades de testeo/escala.
 
 ## Modelo de Datos
 
@@ -77,14 +112,7 @@ winget install Microsoft.DotNet.SDK.8
 winget install MongoDB.Server
 ```
 
-2) Configurar base de datos
-
-```sh
-# Inicializar MongoDB con datos de prueba
-mongo < reset-database.js
-```
-
-3) Ejecutar API
+2) Ejecutar API
 
 ```sh
 # Restaurar dependencias y ejecutar
@@ -92,11 +120,22 @@ dotnet restore
 dotnet run --project RealEstate.Api
 ```
 
-4) Swagger
+3) Swagger
 
 ```
-http://localhost:5065/swagger
+http://localhost:5064/swagger
 ```
+
+## CORS
+
+CORS ya está configurado:
+- Entorno Development: política "DevelopmentCORS" (AllowAnyOrigin, AllowAnyMethod, AllowAnyHeader)
+- Otros entornos: política "AllowReactApp" con orígenes permitidos
+  - http://localhost:3000
+  - https://localhost:5064
+  - Permite credenciales
+
+Puedes ajustar los orígenes en Program.cs.
 
 ## Configuración (appsettings.json)
 
@@ -194,26 +233,3 @@ Respuesta típica:
 
 ```sh
 dotnet test RealEstate.Tests
-```
-
-## Scripts de utilidad
-
-| Script | Descripción | Comando |
-|--------|-------------|---------|
-| reset-database.js | Reset con datos | `mongo < reset-database.js` |
-| clean-all.js | Limpiar BD | `mongo < clean-all.js` |
-| clean-db.bat | Script Windows | `./clean-db.bat` |
-
-## Roadmap
-
-- Autenticación JWT
-- Logging estructurado (Serilog)
-- Redis caching
-- Docker
-- Application Insights
-- CQRS
-
-## Contacto
-
-- API: http://localhost:5065
-- Swagger: http://localhost:5065/swagger
