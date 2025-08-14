@@ -29,8 +29,4 @@
     <ProjectReference Include="..\RealEstate.Infrastructure\RealEstate.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Integration\" />
-  </ItemGroup>
-
 </Project>
