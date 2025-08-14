@@ -115,17 +115,42 @@ http://localhost:5065/swagger
 
 ## API Reference
 
-Endpoints principales:
+### Lista completa de endpoints
 
-| Recurso | Endpoint | Métodos | Descripción |
-|---------|----------|---------|-------------|
-| Properties | `/api/properties` | `GET, POST` | Gestión de propiedades |
-| Properties | `/api/properties/{id}` | `GET, PUT, DELETE` | CRUD específico |
-| Owners | `/api/owners` | `GET, POST` | Gestión de propietarios |
-| Owners | `/api/owners/{id}` | `GET, PUT, DELETE` | CRUD específico |
-| Images | `/api/propertyimages` | `GET, POST, DELETE` | Galería de imágenes |
-| Traces | `/api/propertytraces` | `GET, POST, DELETE` | Historial de transacciones |
-| Health | `/api/health` | `GET` | Estado de la API |
+- Health
+  - GET /api/health
+  - GET /api/health/ping
+
+- Properties
+  - GET /api/properties
+  - GET /api/properties/{id}
+  - POST /api/properties
+  - PUT /api/properties/{id}
+  - DELETE /api/properties/{id}
+  - GET /api/properties/owner/{ownerId}
+
+- Owners
+  - GET /api/owners
+  - GET /api/owners/{id}
+  - POST /api/owners
+  - PUT /api/owners/{id}
+  - DELETE /api/owners/{id}
+
+- Property Images
+  - GET /api/propertyimages
+  - GET /api/propertyimages/{id}
+  - GET /api/propertyimages/property/{propertyId}
+  - POST /api/propertyimages
+  - PUT /api/propertyimages/{id}
+  - DELETE /api/propertyimages/{id}
+
+- Property Traces
+  - GET /api/propertytraces
+  - GET /api/propertytraces/{id}
+  - GET /api/propertytraces/property/{propertyId}
+  - POST /api/propertytraces
+  - PUT /api/propertytraces/{id}
+  - DELETE /api/propertytraces/{id}
 
 ### Filtros avanzados (GET /api/properties)
 
