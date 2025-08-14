@@ -68,7 +68,7 @@ namespace RealEstate.Api.Controllers
             var created = await _repository.CreateAsync(property);
             var createdDto = _mapper.MapToDto(created);
 
-            return CreatedAtAction(nameof(GetById), new { id = created.Id }, createdDto);
+            return CreatedAtAction(nameof(GetById), new { id = created.IdProperty }, createdDto);
         }
 
         // PUT actualizar
@@ -76,7 +76,7 @@ namespace RealEstate.Api.Controllers
         public async Task<IActionResult> Update(int id, [FromBody] PropertyDto dto)
         {
             var property = _mapper.MapToEntity(dto);
-            property.Id = id;
+            property.IdProperty = id;
 
             var updated = await _repository.UpdateAsync(id, property);
             if (!updated)
@@ -94,6 +94,15 @@ namespace RealEstate.Api.Controllers
                 return NotFound();
 
             return NoContent();
+        }
+
+        // GET propiedades por owner
+        [HttpGet("owner/{ownerId}")]
+        public async Task<ActionResult<IEnumerable<PropertyDto>>> GetByOwnerId(int ownerId)
+        {
+            var properties = await _repository.GetByOwnerIdAsync(ownerId);
+            var data = properties.Select(p => _mapper.MapToDto(p));
+            return Ok(data);
         }
     }
 }

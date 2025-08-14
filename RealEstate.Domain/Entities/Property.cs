@@ -5,12 +5,12 @@ namespace RealEstate.Domain.Entities
     public class Property
     {
         [BsonId]
-        public int Id { get; set; }
-
+        public int IdProperty { get; set; }
         public string Name { get; set; } = default!;
         public string Address { get; set; } = default!;
         public decimal Price { get; set; }
-        public string OwnerId { get; set; } = default!;
-        public string ImageUrl { get; set; } = default!;
+        public string CodeInternal { get; set; } = default!;
+        public int Year { get; set; }
+        public int IdOwner { get; set; }
     }
 }

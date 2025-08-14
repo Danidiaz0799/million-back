@@ -18,5 +18,6 @@ namespace RealEstate.Application.Interfaces
         Task<Property> CreateAsync(Property property);
         Task<bool> UpdateAsync(int id, Property property);
         Task<bool> DeleteAsync(int id);
+        Task<IEnumerable<Property>> GetByOwnerIdAsync(int ownerId);
     }
 }

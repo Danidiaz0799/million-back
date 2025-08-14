@@ -61,7 +61,7 @@ namespace RealEstate.Infrastructure.Repositories
 
             var finalFilter = filters.Count > 0 ? builder.And(filters) : builder.Empty;
 
-            var sort = Builders<Property>.Sort.Ascending("Id");
+            var sort = Builders<Property>.Sort.Ascending("IdProperty");
             if (!string.IsNullOrWhiteSpace(sortField))
             {
                 sort = sortDescending
@@ -85,27 +85,32 @@ namespace RealEstate.Infrastructure.Repositories
 
         public async Task<Property?> GetByIdAsync(int id)
         {
-            return await _collection.Find(p => p.Id == id).FirstOrDefaultAsync();
+            return await _collection.Find(p => p.IdProperty == id).FirstOrDefaultAsync();
         }
 
         public async Task<Property> CreateAsync(Property property)
         {
-            property.Id = GetNextSequenceValue("propertyid");
+            property.IdProperty = GetNextSequenceValue("propertyid");
             await _collection.InsertOneAsync(property);
             return property;
         }
 
         public async Task<bool> UpdateAsync(int id, Property property)
         {
-            property.Id = id;
-            var result = await _collection.ReplaceOneAsync(p => p.Id == id, property);
+            property.IdProperty = id;
+            var result = await _collection.ReplaceOneAsync(p => p.IdProperty == id, property);
             return result.ModifiedCount > 0;
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var result = await _collection.DeleteOneAsync(p => p.Id == id);
+            var result = await _collection.DeleteOneAsync(p => p.IdProperty == id);
             return result.DeletedCount > 0;
+        }
+
+        public async Task<IEnumerable<Property>> GetByOwnerIdAsync(int ownerId)
+        {
+            return await _collection.Find(p => p.IdOwner == ownerId).ToListAsync();
         }
     }
 }
